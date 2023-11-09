@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de CEP</title>
+</head>
+<body>
+    <!-- Campo de entrada para o CEP -->
+    <label for="cep">CEP:</label>
+    <input type="text" id="cep" maxlength="8" placeholder="Digite o CEP">
+    <!-- Botão para acionar a função de consulta -->
+    <button onclick="consultarCEP()">Consultar</button>
+    <br><br>
+    
+    <!-- Campos de exibição para os dados do endereço -->
+    <label for="logradouro">Rua:</label>
+    <input type="text" id="logradouro" disabled>
+    <br><br>
+    
+    <label for="bairro">Bairro:</label>
+    <input type="text" id="bairro" disabled>
+    <br><br>
+
+    <label for="localidade">Cidade:</label>
+    <input type="text" id="localidade" disabled>
+    <br><br>
+
+    <label for="uf">Estado:</label>
+    <input type="text" id="uf" disabled>
+    <br><br>
+    <script>
+        // Função utilizando a API iaCEP para consultar o CEP
+        function consultarCEP() {
+            const cep = document.querySelector("#cep").value;
+            const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+            // Realiza uma solicitação fetch para obter os dados do CEP
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Não foi possível consultar o CEP.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.erro) {
+                        alert("CEP não encontrado.");
+                    } else {
+                        document.getElementById("logradouro").value = data.logradouro;
+                        document.getElementById("bairro").value = data.bairro;
+                        document.getElementById("localidade").value = data.localidade;
+                        document.getElementById("uf").value = data.uf;
+                    }
+                })
+                .catch(error => {
+                    console.error("Ocorreu um erro ao consultar o CEP:", error);
+                });
+        }
+    </script>
+</body>
+</html>
